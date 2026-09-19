@@ -1,7 +1,8 @@
-/* Site-wide animated "galaxy" background: a parallax starfield plus a
-   few small orbiting atom/planet systems, drawn on a single fixed
-   canvas so it stays behind every page and section, not just the hero.
-   Colors and blend mode flip with the light/dark theme. */
+/* Site-wide animated "galaxy" background: one large circular disc with
+   slow-moving particles drifting inside it (like the reference spiral
+   galaxy photo), plus a sparse ambient starfield. Rendered on a single
+   fixed canvas so it stays behind every page and section. Also drives a
+   small stylish cursor-follower dot. Colors/blend mode flip with theme. */
 
 (function () {
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -14,6 +15,7 @@
   let width = 0;
   let height = 0;
   let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let disc = { cx: 0, cy: 0, r: 0 };
 
   function isDarkTheme() {
     return document.documentElement.getAttribute("data-theme") === "dark";
@@ -24,16 +26,16 @@
   function getColors() {
     return isDarkTheme()
       ? {
+          core: "155, 191, 10",
+          mid: "0, 125, 16",
+          dot: [244, 243, 248],
           star: [244, 243, 248],
-          nucleus: { r: 155, g: 191, b: 10 },
-          electron: { r: 85, g: 188, b: 3 },
-          orbitLine: "rgba(155, 191, 10, 0.25)",
         }
       : {
+          core: "85, 188, 3",
+          mid: "38, 89, 2",
+          dot: [12, 60, 5],
           star: [38, 89, 2],
-          nucleus: { r: 0, g: 125, b: 16 },
-          electron: { r: 85, g: 188, b: 3 },
-          orbitLine: "rgba(0, 125, 16, 0.2)",
         };
   }
 
@@ -49,81 +51,72 @@
     canvas.style.width = width + "px";
     canvas.style.height = height + "px";
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    disc.cx = width * 0.8;
+    disc.cy = height * 0.3;
+    disc.r = Math.max(160, Math.min(Math.min(width, height) * 0.42, 460));
   }
 
-  const STAR_COUNT = 130;
-  const stars = Array.from({ length: STAR_COUNT }, () => {
-    const depth = Math.random();
+  const PARTICLE_COUNT = 110;
+  const particles = Array.from({ length: PARTICLE_COUNT }, () => {
+    const radiusFactor = Math.pow(Math.random(), 0.65);
     return {
-      x: Math.random(),
-      y: Math.random(),
-      depth,
-      radius: 0.5 + depth * 1.6,
-      baseAlpha: 0.25 + depth * 0.6,
-      twinkleSpeed: 0.0006 + Math.random() * 0.0014,
-      twinkleOffset: Math.random() * Math.PI * 2,
-      parallax: 0.02 + depth * 0.05,
+      radiusFactor,
+      angle: Math.random() * Math.PI * 2,
+      speed: (0.00016 + Math.random() * 0.00012) * (1.4 - radiusFactor * 0.7),
+      size: 0.6 + Math.random() * 1.8,
+      alpha: 0.35 + Math.random() * 0.55,
+      squash: 0.62 + Math.random() * 0.1,
+      tilt: -0.35,
     };
   });
 
-  const orbitSystems = [
-    { x: 0.12, y: 0.22, r1: 26, r2: 42, speed1: 0.0006, speed2: -0.0004, tilt: 0.35 },
-    { x: 0.86, y: 0.18, r1: 22, r2: 0, speed1: -0.0008, speed2: 0, tilt: 0.5 },
-    { x: 0.08, y: 0.78, r1: 20, r2: 34, speed1: 0.0009, speed2: 0.0005, tilt: 0.2 },
-    { x: 0.92, y: 0.72, r1: 30, r2: 0, speed1: 0.0005, speed2: 0, tilt: 0.6 },
-  ];
-
-  const pointer = { x: 0.5, y: 0.5 };
-  const pointerEased = { x: 0.5, y: 0.5 };
-
-  window.addEventListener(
-    "mousemove",
-    (e) => {
-      pointer.x = e.clientX / window.innerWidth;
-      pointer.y = e.clientY / window.innerHeight;
-    },
-    { passive: true }
-  );
+  const STAR_COUNT = 46;
+  const stars = Array.from({ length: STAR_COUNT }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    radius: 0.5 + Math.random() * 1.2,
+    baseAlpha: 0.15 + Math.random() * 0.35,
+    twinkleSpeed: 0.0006 + Math.random() * 0.0012,
+    twinkleOffset: Math.random() * Math.PI * 2,
+  }));
 
   window.addEventListener("resize", resize);
 
-  function drawOrbit(system, time) {
-    const cx = system.x * width;
-    const cy = system.y * height;
+  function drawDisc(time) {
+    const { cx, cy, r } = disc;
 
-    ctx.strokeStyle = colors.orbitLine;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.clip();
+
+    const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    glow.addColorStop(0, `rgba(${colors.core}, 0.32)`);
+    glow.addColorStop(0.45, `rgba(${colors.mid}, 0.16)`);
+    glow.addColorStop(1, `rgba(${colors.mid}, 0)`);
+    ctx.fillStyle = glow;
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+
+    particles.forEach((p) => {
+      const angle = p.angle + time * p.speed;
+      const radius = p.radiusFactor * r;
+      const x = cx + Math.cos(angle) * radius;
+      const y = cy + Math.sin(angle) * radius * p.squash;
+
+      ctx.fillStyle = `rgba(${colors.dot[0]}, ${colors.dot[1]}, ${colors.dot[2]}, ${p.alpha})`;
+      ctx.beginPath();
+      ctx.arc(x, y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    ctx.strokeStyle = `rgba(${colors.core}, 0.12)`;
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.ellipse(cx, cy, system.r1, system.r1 * (1 - system.tilt), 0, 0, Math.PI * 2);
+    ctx.arc(cx, cy, r * 0.995, 0, Math.PI * 2);
     ctx.stroke();
 
-    ctx.fillStyle = `rgba(${colors.nucleus.r}, ${colors.nucleus.g}, ${colors.nucleus.b}, 0.85)`;
-    ctx.beginPath();
-    ctx.arc(cx, cy, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-
-    const angle1 = time * system.speed1;
-    const ex1 = cx + Math.cos(angle1) * system.r1;
-    const ey1 = cy + Math.sin(angle1) * system.r1 * (1 - system.tilt);
-    ctx.fillStyle = `rgba(${colors.electron.r}, ${colors.electron.g}, ${colors.electron.b}, 0.95)`;
-    ctx.beginPath();
-    ctx.arc(ex1, ey1, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-
-    if (system.r2) {
-      ctx.strokeStyle = colors.orbitLine;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, system.r2, system.r2 * (1 - system.tilt * 0.6), Math.PI / 4, 0, Math.PI * 2);
-      ctx.stroke();
-
-      const angle2 = time * system.speed2;
-      const ex2 = cx + Math.cos(angle2 + 1.2) * system.r2;
-      const ey2 = cy + Math.sin(angle2 + 1.2) * system.r2 * (1 - system.tilt * 0.6);
-      ctx.fillStyle = `rgba(${colors.electron.r}, ${colors.electron.g}, ${colors.electron.b}, 0.8)`;
-      ctx.beginPath();
-      ctx.arc(ex2, ey2, 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    ctx.restore();
   }
 
   function render(time) {
@@ -134,26 +127,16 @@
 
     ctx.clearRect(0, 0, width, height);
 
-    pointerEased.x += (pointer.x - pointerEased.x) * 0.03;
-    pointerEased.y += (pointer.y - pointerEased.y) * 0.03;
-    const px = (pointerEased.x - 0.5) * 2;
-    const py = (pointerEased.y - 0.5) * 2;
-
     stars.forEach((star) => {
       const twinkle = 0.5 + 0.5 * Math.sin(time * star.twinkleSpeed + star.twinkleOffset);
-      const alpha = star.baseAlpha * (0.55 + 0.45 * twinkle);
-      const offsetX = px * star.parallax * 60;
-      const offsetY = py * star.parallax * 60;
-      const x = star.x * width + offsetX;
-      const y = star.y * height + offsetY;
-
+      const alpha = star.baseAlpha * (0.5 + 0.5 * twinkle);
       ctx.fillStyle = `rgba(${colors.star[0]}, ${colors.star[1]}, ${colors.star[2]}, ${alpha})`;
       ctx.beginPath();
-      ctx.arc(x, y, star.radius, 0, Math.PI * 2);
+      ctx.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2);
       ctx.fill();
     });
 
-    orbitSystems.forEach((system) => drawOrbit(system, time));
+    drawDisc(time);
 
     requestAnimationFrame(render);
   }
@@ -161,14 +144,47 @@
   resize();
 
   if (prefersReduced) {
-    stars.forEach((star) => {
-      ctx.fillStyle = `rgba(${colors.star[0]}, ${colors.star[1]}, ${colors.star[2]}, ${star.baseAlpha})`;
-      ctx.beginPath();
-      ctx.arc(star.x * width, star.y * height, star.radius, 0, Math.PI * 2);
-      ctx.fill();
-    });
-    orbitSystems.forEach((system) => drawOrbit(system, 0));
+    drawDisc(0);
   } else {
     requestAnimationFrame(render);
+  }
+
+  /* ---- Stylish cursor-follower dot ---- */
+
+  const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+  if (canHover && !prefersReduced) {
+    const dot = document.createElement("div");
+    dot.className = "cursor-dot";
+    document.body.appendChild(dot);
+
+    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const current = { x: target.x, y: target.y };
+    let visible = false;
+
+    window.addEventListener(
+      "mousemove",
+      (e) => {
+        target.x = e.clientX;
+        target.y = e.clientY;
+        if (!visible) {
+          visible = true;
+          dot.style.opacity = "1";
+        }
+      },
+      { passive: true }
+    );
+
+    document.addEventListener("mouseleave", () => {
+      dot.style.opacity = "0";
+    });
+
+    function renderCursor() {
+      current.x += (target.x - current.x) * 0.18;
+      current.y += (target.y - current.y) * 0.18;
+      dot.style.transform = `translate3d(${current.x}px, ${current.y}px, 0)`;
+      requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
   }
 })();
