@@ -12,10 +12,10 @@
   const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const PALETTE = [
-    { r: 85, g: 188, b: 3 },   // avocado
-    { r: 155, g: 191, b: 10 }, // limerick
-    { r: 0, g: 125, b: 16 },   // forest
-    { r: 38, g: 89, b: 2 },    // lincoln green
+    { r: 106, g: 158, b: 65 },  // muted avocado
+    { r: 150, g: 175, b: 95 },  // muted sage
+    { r: 40, g: 110, b: 55 },   // muted forest
+    { r: 55, g: 95, b: 45 },    // muted lincoln green
   ];
 
   let width = 0;
@@ -100,11 +100,11 @@
       const t = time * blob.speed + blob.offset;
       const x = (blob.baseX + Math.sin(t) * 0.12) * width;
       const y = (blob.baseY + Math.cos(t * 0.8) * 0.14) * height;
-      drawBlob(x, y, blob.radius, blob.color, 0.11);
+      drawBlob(x, y, blob.radius, blob.color, 0.08);
     });
 
     const idleFor = performance.now() - pointer.lastMove;
-    const pointerAlpha = pointer.active && idleFor < 3000 ? 0.24 : 0.08;
+    const pointerAlpha = pointer.active && idleFor < 3000 ? 0.16 : 0.06;
 
     follower.x += (pointer.x - follower.x) * 0.06;
     follower.y += (pointer.y - follower.y) * 0.06;

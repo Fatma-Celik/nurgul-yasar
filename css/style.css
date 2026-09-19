@@ -12,13 +12,15 @@
   --accent-500: #3e9e05;
   --accent-avocado: #55bc03;
   --accent-limerick: #9bbf0a;
+  --accent-sage: #7fa15a;
+  --accent-sage-soft: #a9bf8a;
   --fg: #f4f3f8;
   --fg-muted: rgba(244, 243, 248, 0.72);
   --fg-faint: rgba(244, 243, 248, 0.45);
   --surface: rgba(244, 243, 248, 0.05);
   --surface-strong: rgba(244, 243, 248, 0.09);
   --border: rgba(244, 243, 248, 0.12);
-  --shadow-glow: 0 20px 60px rgba(85, 188, 3, 0.18);
+  --shadow-glow: 0 20px 60px rgba(85, 188, 3, 0.1);
   --radius-lg: 28px;
   --radius-md: 18px;
   --radius-sm: 12px;
@@ -53,9 +55,9 @@ body::before {
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(120% 90% at 15% -10%, rgba(38, 89, 2, 0.55), transparent 55%),
-    radial-gradient(90% 70% at 100% 10%, rgba(0, 125, 16, 0.35), transparent 60%),
-    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-3) 45%, var(--bg-2) 75%, var(--bg-1) 100%);
+    radial-gradient(120% 90% at 15% -10%, rgba(38, 89, 2, 0.26), transparent 55%),
+    radial-gradient(90% 70% at 100% 10%, rgba(0, 125, 16, 0.16), transparent 60%),
+    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-1) 30%, var(--bg-3) 60%, var(--bg-1) 100%);
 }
 
 img {
@@ -118,7 +120,7 @@ h1, h2, h3, h4 {
 }
 
 .section-title span {
-  background: linear-gradient(100deg, var(--accent-avocado), var(--accent-limerick));
+  background: linear-gradient(100deg, var(--accent-sage), var(--accent-sage-soft));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -316,7 +318,7 @@ section {
   height: 100%;
   z-index: -1;
   mix-blend-mode: screen;
-  opacity: 0.9;
+  opacity: 0.5;
 }
 
 .hero-grid {
@@ -336,7 +338,7 @@ section {
 }
 
 .hero-title .accent {
-  background: linear-gradient(100deg, var(--accent-limerick), var(--accent-avocado));
+  background: linear-gradient(100deg, var(--accent-sage-soft), var(--accent-sage));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -479,7 +481,7 @@ section {
   position: relative;
   aspect-ratio: 4 / 5;
   border-radius: var(--radius-lg);
-  background: linear-gradient(155deg, var(--bg-5), var(--bg-3));
+  background: linear-gradient(155deg, var(--bg-4), var(--bg-1));
   border: 1px solid var(--border);
   overflow: hidden;
   display: grid;
@@ -700,7 +702,7 @@ section {
   height: 160px;
   display: grid;
   place-items: center;
-  background: linear-gradient(150deg, var(--bg-5), var(--accent-600));
+  background: linear-gradient(150deg, var(--bg-4), var(--bg-1));
   position: relative;
 }
 
@@ -810,9 +812,9 @@ section {
   overflow: hidden;
 }
 
-.blog-thumb.type-yazi { background: linear-gradient(150deg, var(--bg-5), var(--bg-3)); }
-.blog-thumb.type-foto { background: linear-gradient(150deg, var(--accent-600), var(--bg-2)); }
-.blog-thumb.type-etkinlik { background: linear-gradient(150deg, var(--accent-avocado), var(--bg-4)); }
+.blog-thumb.type-yazi { background: linear-gradient(150deg, var(--bg-4), var(--bg-1)); }
+.blog-thumb.type-foto { background: linear-gradient(150deg, var(--bg-3), var(--bg-1)); }
+.blog-thumb.type-etkinlik { background: linear-gradient(150deg, var(--accent-sage), var(--bg-3)); }
 
 .blog-thumb svg {
   width: 42px;
@@ -899,7 +901,7 @@ section {
 .contact-info-card {
   padding: 36px 30px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, var(--bg-5), var(--bg-3));
+  background: linear-gradient(160deg, var(--bg-4), var(--bg-1));
   border: 1px solid var(--border);
   box-shadow: var(--shadow-glow);
 }
