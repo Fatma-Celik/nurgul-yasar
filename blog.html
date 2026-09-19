@@ -10,6 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<script>
+  (function () {
+    var saved = localStorage.getItem("ny-theme");
+    if (saved === "dark") document.documentElement.setAttribute("data-theme", "dark");
+  })();
+</script>
 </head>
 <body>
 
@@ -27,7 +33,6 @@
       <a href="index.html#hakkimda">Hakkımda</a>
       <a href="index.html#uzmanlik">Uzmanlık Alanları</a>
       <a href="index.html#deneyim">Deneyim</a>
-      <a href="index.html#projeler">Projeler</a>
       <a href="blog.html" class="active">Blog &amp; Etkinlikler</a>
       <a href="index.html#iletisim">İletişim</a>
     </nav>
@@ -37,6 +42,10 @@
         İletişime Geç
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
       </a>
+      <button class="theme-toggle" aria-label="Koyu/açık temayı değiştir">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></svg>
+      </button>
       <button class="nav-toggle" aria-label="Menüyü aç/kapat">
         <span></span>
       </button>
@@ -45,6 +54,7 @@
 </header>
 
 <section class="blog-header">
+  <div class="corner-accent"></div>
   <div class="container">
     <p class="eyebrow reveal" style="justify-content:center;">Blog &amp; Etkinlikler</p>
     <h1 class="section-title reveal">Sınıftan <span>Notlar</span>, Kareler ve Fikirler</h1>
@@ -219,7 +229,6 @@
     <div class="footer-links">
       <a href="index.html#hakkimda">Hakkımda</a>
       <a href="index.html#uzmanlik">Uzmanlık Alanları</a>
-      <a href="index.html#projeler">Projeler</a>
       <a href="blog.html">Blog &amp; Etkinlikler</a>
       <a href="index.html#iletisim">İletişim</a>
     </div>

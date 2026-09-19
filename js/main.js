@@ -3,8 +3,23 @@ document.addEventListener("DOMContentLoaded", () => {
   const navToggle = document.querySelector(".nav-toggle");
   const navLinks = document.querySelector(".nav-links");
   const yearEl = document.getElementById("year");
+  const themeToggle = document.querySelector(".theme-toggle");
 
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const next = isDark ? "light" : "dark";
+      if (next === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.removeAttribute("data-theme");
+      }
+      localStorage.setItem("ny-theme", next);
+      window.dispatchEvent(new CustomEvent("themechange", { detail: { theme: next } }));
+    });
+  }
 
   const onScroll = () => {
     if (!header) return;

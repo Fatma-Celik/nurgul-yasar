@@ -25,6 +25,15 @@
   const pointer = { x: 0, y: 0, active: false, lastMove: 0 };
   const follower = { x: 0, y: 0 };
 
+  function isDarkTheme() {
+    return document.documentElement.getAttribute("data-theme") === "dark";
+  }
+
+  let themeMultiplier = isDarkTheme() ? 1 : 1.8;
+  window.addEventListener("themechange", (e) => {
+    themeMultiplier = e.detail.theme === "dark" ? 1 : 1.8;
+  });
+
   function resize() {
     const rect = host.getBoundingClientRect();
     width = rect.width;
@@ -100,11 +109,11 @@
       const t = time * blob.speed + blob.offset;
       const x = (blob.baseX + Math.sin(t) * 0.12) * width;
       const y = (blob.baseY + Math.cos(t * 0.8) * 0.14) * height;
-      drawBlob(x, y, blob.radius, blob.color, 0.08);
+      drawBlob(x, y, blob.radius, blob.color, 0.08 * themeMultiplier);
     });
 
     const idleFor = performance.now() - pointer.lastMove;
-    const pointerAlpha = pointer.active && idleFor < 3000 ? 0.16 : 0.06;
+    const pointerAlpha = (pointer.active && idleFor < 3000 ? 0.16 : 0.06) * themeMultiplier;
 
     follower.x += (pointer.x - follower.x) * 0.06;
     follower.y += (pointer.y - follower.y) * 0.06;

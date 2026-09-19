@@ -3,15 +3,54 @@
    ========================================================= */
 
 :root {
+  /* ---- Light theme (default): white main, green secondary ---- */
+  --bg-1: #ffffff;
+  --bg-2: #f2f7ec;
+  --bg-3: #e8f2df;
+  --bg-4: #dcebd0;
+  --bg-5: #c9e1b8;
+  --accent-600: #007d10;
+  --accent-500: #3e9e05;
+  --accent-avocado: #55bc03;
+  --accent-limerick: #9bbf0a;
+  --accent-sage: #3f6b28;
+  --accent-sage-soft: #5d8a3f;
+  --fg: #0c2405;
+  --fg-muted: rgba(12, 36, 5, 0.68);
+  --fg-faint: rgba(12, 36, 5, 0.45);
+  --surface: rgba(38, 89, 2, 0.05);
+  --surface-strong: rgba(38, 89, 2, 0.09);
+  --border: rgba(38, 89, 2, 0.15);
+  --shadow-glow: 0 20px 60px rgba(85, 188, 3, 0.14);
+  --page-wash:
+    radial-gradient(120% 90% at 15% -10%, rgba(85, 188, 3, 0.12), transparent 55%),
+    radial-gradient(90% 70% at 100% 10%, rgba(0, 125, 16, 0.08), transparent 60%),
+    linear-gradient(160deg, #ffffff 0%, #ffffff 45%, #edf5e5 100%);
+  --wallpaper-color: rgba(38, 89, 2, 0.075);
+  --chip-bg: rgba(255, 255, 255, 0.6);
+  --chip-strong-bg: rgba(255, 255, 255, 0.85);
+  --chip-fill: rgba(38, 89, 2, 0.08);
+  --icon-chip-bg: linear-gradient(135deg, var(--accent-avocado), var(--accent-600));
+  --icon-chip-fg: #ffffff;
+  --header-bg: rgba(255, 255, 255, 0.78);
+  --overlay-bg: rgba(255, 255, 255, 0.97);
+  --fluid-blend-mode: multiply;
+  --fluid-opacity: 0.8;
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --font-head: "Fredoka", "Poppins", sans-serif;
+  --font-body: "Poppins", "Segoe UI", sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme="dark"] {
+  /* ---- Dark theme: green main, white secondary ---- */
   --bg-1: #02060e;
   --bg-2: #071c05;
   --bg-3: #092601;
   --bg-4: #163d02;
   --bg-5: #265902;
-  --accent-600: #007d10;
-  --accent-500: #3e9e05;
-  --accent-avocado: #55bc03;
-  --accent-limerick: #9bbf0a;
   --accent-sage: #7fa15a;
   --accent-sage-soft: #a9bf8a;
   --fg: #f4f3f8;
@@ -21,12 +60,20 @@
   --surface-strong: rgba(244, 243, 248, 0.09);
   --border: rgba(244, 243, 248, 0.12);
   --shadow-glow: 0 20px 60px rgba(85, 188, 3, 0.1);
-  --radius-lg: 28px;
-  --radius-md: 18px;
-  --radius-sm: 12px;
-  --font-head: "Fredoka", "Poppins", sans-serif;
-  --font-body: "Poppins", "Segoe UI", sans-serif;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --page-wash:
+    radial-gradient(120% 90% at 15% -10%, rgba(38, 89, 2, 0.26), transparent 55%),
+    radial-gradient(90% 70% at 100% 10%, rgba(0, 125, 16, 0.16), transparent 60%),
+    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-1) 30%, var(--bg-3) 60%, var(--bg-1) 100%);
+  --wallpaper-color: rgba(244, 243, 248, 0.05);
+  --chip-bg: rgba(2, 6, 14, 0.5);
+  --chip-strong-bg: rgba(9, 38, 1, 0.75);
+  --chip-fill: rgba(244, 243, 248, 0.1);
+  --icon-chip-bg: linear-gradient(135deg, var(--accent-600), var(--bg-3));
+  --icon-chip-fg: var(--accent-limerick);
+  --header-bg: rgba(2, 6, 14, 0.72);
+  --overlay-bg: rgba(2, 6, 14, 0.97);
+  --fluid-blend-mode: screen;
+  --fluid-opacity: 0.5;
 }
 
 * {
@@ -47,6 +94,7 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
 }
 
 body::before {
@@ -54,10 +102,24 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: -2;
-  background:
-    radial-gradient(120% 90% at 15% -10%, rgba(38, 89, 2, 0.26), transparent 55%),
-    radial-gradient(90% 70% at 100% 10%, rgba(0, 125, 16, 0.16), transparent 60%),
-    linear-gradient(160deg, var(--bg-1) 0%, var(--bg-1) 30%, var(--bg-3) 60%, var(--bg-1) 100%);
+  background: var(--page-wash);
+  transition: background 0.4s var(--ease);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--wallpaper-color);
+  -webkit-mask-image: url("../assets/science-pattern.svg");
+  mask-image: url("../assets/science-pattern.svg");
+  -webkit-mask-repeat: repeat;
+  mask-repeat: repeat;
+  -webkit-mask-size: 340px 340px;
+  mask-size: 340px 340px;
+  transition: background-color 0.4s var(--ease);
 }
 
 img {
@@ -201,7 +263,7 @@ section {
 
 .site-header.scrolled {
   padding: 12px 0;
-  background: rgba(2, 6, 14, 0.72);
+  background: var(--header-bg);
   backdrop-filter: blur(16px) saturate(140%);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   border-bottom: 1px solid var(--border);
@@ -300,6 +362,44 @@ section {
 .nav-toggle.open span::before { transform: rotate(45deg) translate(5px, 5px); background: var(--fg); }
 .nav-toggle.open span::after { transform: rotate(-45deg) translate(5px, -5px); background: var(--fg); }
 
+.theme-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  flex-shrink: 0;
+  transition: background 0.3s var(--ease), transform 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent-avocado);
+  color: var(--accent-avocado);
+  transform: translateY(-2px) rotate(-8deg);
+}
+
+.theme-toggle svg { width: 20px; height: 20px; }
+
+.theme-toggle .icon-sun { display: none; }
+
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+
+.corner-accent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(260px, 30vw);
+  height: min(260px, 30vw);
+  background: linear-gradient(135deg, transparent 52%, var(--accent-avocado) 52%);
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: -1;
+}
+
 /* ---------- Hero ---------- */
 
 .hero {
@@ -317,8 +417,9 @@ section {
   width: 100%;
   height: 100%;
   z-index: -1;
-  mix-blend-mode: screen;
-  opacity: 0.5;
+  mix-blend-mode: var(--fluid-blend-mode);
+  opacity: var(--fluid-opacity);
+  transition: opacity 0.4s var(--ease);
 }
 
 .hero-grid {
@@ -373,7 +474,7 @@ section {
   border-radius: 30px;
   font-size: 0.85rem;
   border: 1px solid var(--border);
-  background: rgba(2, 6, 14, 0.5);
+  background: var(--chip-bg);
   backdrop-filter: blur(8px);
   color: var(--fg-muted);
 }
@@ -420,7 +521,7 @@ section {
   gap: 8px;
   padding: 10px 14px;
   border-radius: 16px;
-  background: rgba(9, 38, 1, 0.75);
+  background: var(--chip-strong-bg);
   border: 1px solid var(--border);
   backdrop-filter: blur(10px);
   font-size: 0.82rem;
@@ -491,7 +592,8 @@ section {
 
 .about-photo svg {
   width: 46%;
-  color: rgba(244, 243, 248, 0.85);
+  color: var(--fg);
+  opacity: 0.85;
 }
 
 .about-photo .leaf-deco {
@@ -507,7 +609,7 @@ section {
   right: 18px;
   padding: 14px 16px;
   border-radius: var(--radius-sm);
-  background: rgba(2, 6, 14, 0.55);
+  background: var(--chip-bg);
   border: 1px solid var(--border);
   backdrop-filter: blur(8px);
   font-size: 0.85rem;
@@ -598,8 +700,8 @@ section {
   border-radius: 16px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--accent-600), var(--bg-3));
-  color: var(--accent-limerick);
+  background: var(--icon-chip-bg);
+  color: var(--icon-chip-fg);
   margin-bottom: 20px;
   position: relative;
   z-index: 1;
@@ -718,7 +820,8 @@ section {
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: rgba(2, 6, 14, 0.55);
+  background: rgba(2, 6, 14, 0.6);
+  color: #fff;
   border: 1px solid rgba(244, 243, 248, 0.2);
 }
 
@@ -843,7 +946,8 @@ section {
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  background: rgba(2, 6, 14, 0.55);
+  background: rgba(2, 6, 14, 0.6);
+  color: #fff;
   border: 1px solid rgba(244, 243, 248, 0.25);
 }
 
@@ -925,11 +1029,11 @@ section {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: rgba(244, 243, 248, 0.1);
+  background: var(--icon-chip-bg);
   flex-shrink: 0;
 }
 
-.contact-item .icon-box svg { width: 20px; height: 20px; color: var(--accent-limerick); }
+.contact-item .icon-box svg { width: 20px; height: 20px; color: var(--icon-chip-fg); }
 
 .contact-item a, .contact-item span { font-size: 0.95rem; }
 
@@ -945,8 +1049,9 @@ section {
   border-radius: 12px;
   display: grid;
   place-items: center;
-  background: rgba(244, 243, 248, 0.1);
-  transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+  background: var(--chip-fill);
+  color: var(--fg);
+  transition: transform 0.3s var(--ease), background 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 .social-row a:hover {
@@ -992,7 +1097,7 @@ section {
 .form-field textarea:focus {
   outline: none;
   border-color: var(--accent-avocado);
-  background: rgba(244, 243, 248, 0.08);
+  background: var(--surface-strong);
 }
 
 .form-field textarea { resize: vertical; min-height: 130px; }
@@ -1090,7 +1195,7 @@ section {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    background: rgba(2, 6, 14, 0.97);
+    background: var(--overlay-bg);
     backdrop-filter: blur(10px);
   }
   .nav-links.open a { font-size: 1.3rem; padding: 14px 24px; }
